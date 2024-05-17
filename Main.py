@@ -25,4 +25,7 @@ x_delta = f.check(f.check_float(input('\nSet the distance between every measurem
 
 y = measurement.measure(mes_system, x_delta, env_data)
 
-plt.plot()
+print(y)
+plt.plot(measurement.x_values, y)
+
+plt.show()

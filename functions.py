@@ -103,6 +103,7 @@ class measurement:
             return V
         
         result = []
+        x = []
         if system in ['1', '2']:
             while self.b_position <= 100:
                 vam = voltage(check_side(self.a_position, self.m_position), env_data[0], env_data[1], env_data[2], env_data[3], self.ambn, distance_prim(self.a_position, self.m_position))
@@ -116,8 +117,11 @@ class measurement:
                 res_a = self.geometry_factor*V_delta/env_data[3]
                 result.append(res_a)
 
+                x.append(self.middle)
+                self.middle += x_delta
                 self.a_position += x_delta
                 self.b_position += x_delta
                 self.m_position += x_delta
                 self.n_position += x_delta
+        self.x_values = x        
         return result
