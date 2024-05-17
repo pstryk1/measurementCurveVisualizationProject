@@ -30,7 +30,10 @@ def check(element, conditions, type):
             element = check_float(input('Inproper value. Please try again: '))
     return element
 
-class geometry:
+
+
+
+class measurement:
 
     def __init__(self):
         None
@@ -77,5 +80,44 @@ class geometry:
 
             self.geometry_factor = pi*self.ambn*(self.ambn+self.mn)/self.mn
             
+    def measure(self, system, x_delta, env_data):
 
-    
+        def check_side(p1,p2):
+            if (p1 < 50 and p2 <= 50) or (p1 >= 50 and p2 > 50):
+                return True
+            else:
+                return False
+            
+        def distance_prim(p1,p2):
+            if p1 <=50:
+                return abs(50+(50-p1)-p2)
+            else:
+                return abs(50-(p1-50)-p2)
+            
+            
+        def voltage(side, res1, res2, k12, curr, distance, distance_prim):
+            if side == True:
+                V = curr*res1/(2*pi*distance)+k12*curr*res1/(2*pi*distance_prim)
+            else:
+                V = curr*res2/(2*pi*distance)*(1-k12)
+            return V
+        
+        result = []
+        if system in ['1', '2']:
+            while self.b_position <= 100:
+                vam = voltage(check_side(self.a_position, self.m_position), env_data[0], env_data[1], env_data[2], env_data[3], self.ambn, distance_prim(self.a_position, self.m_position))
+                vbm = voltage(check_side(self.b_position, self.m_position), env_data[0], env_data[1], env_data[2], env_data[3], self.ambn, distance_prim(self.b_position, self.m_position))
+
+                van = voltage(check_side(self.a_position, self.n_position), env_data[0], env_data[1], env_data[2], env_data[3], self.ambn, distance_prim(self.a_position, self.n_position))
+                vbn = voltage(check_side(self.b_position, self.n_position), env_data[0], env_data[1], env_data[2], env_data[3], self.ambn, distance_prim(self.b_position, self.n_position))
+
+                V_delta = (vam+vbm)-(van+vbn)
+
+                res_a = self.geometry_factor*V_delta/env_data[3]
+                result.append(res_a)
+
+                self.a_position += x_delta
+                self.b_position += x_delta
+                self.m_position += x_delta
+                self.n_position += x_delta
+        return result
