@@ -83,33 +83,37 @@ class measurement:
     def measure(self, system, x_delta, env_data):
 
         def check_side(p1,p2):
-            if (p1 < 50 and p2 <= 50):
+            if (p1 <= 50 and p2 <= 50):
                 return [True, 0, 0]
-            elif (p1 >= 50 and p2 > 50):
+            elif (p1 >= 50 and p2 >= 50):
                 return [True, 1, 1]
             elif (p1 < 50 and p2 > 50):
                 return [False, 0, 1]
-            else:
+            elif (p1 > 50 and p2 < 50):
                 return [False, 1, 0]
+
             
         def distance_prim(p1,p2):
-            if p1 <=50:
+            if p1 < 50:
                 return abs(50+(50-p1)-p2)
             else:
                 return abs(50-(p1-50)-p2)
             
             
-        def voltage(side, res, curr, distance, distance_prim):
+        def voltage(side, res, curr, distance, distance_prim, direction):
 
             if side[1] == 0:
                 k12 = (res[1]-res[0])/(res[0]+res[1])
             else:
                 k12 = (res[0]-res[1])/(res[0]+res[1])
 
+            print(side)
+
             if side[0] == True:
-                v = curr*res[side[2]]/(2*pi*distance)+k12*curr*res[side[2]]/(2*pi*distance_prim)
+                print(f'{distance}  {distance_prim}')
+                v = direction*(curr*res[side[2]]/(2*pi*distance)+k12*curr*res[side[2]]/(2*pi*distance_prim))
             else:
-                v = curr*res[side[2]]/(2*pi*distance)*(1-k12)
+                v = (direction*curr*res[side[2]]/(2*pi*distance))*(1-k12)
             return v
         
         result = []
@@ -122,11 +126,13 @@ class measurement:
                 distance1 = self.ambn
                 distance2 = self.ambn+self.mn
             while self.b_position <= 100:
-                vam = voltage(check_side(self.a_position, self.m_position), [env_data[0], env_data[1]], env_data[2],  distance1, distance_prim(self.a_position, self.m_position))
-                vbm = voltage(check_side(self.b_position, self.m_position), [env_data[0], env_data[1]], env_data[2],  distance2, distance_prim(self.b_position, self.m_position))
+                print(f'dla punkt {self.middle}')
+                print(f'{self.a_position}   {self.m_position}   {self.n_position}   {self.b_position}')
+                vam = voltage(check_side(self.a_position, self.m_position), [env_data[0], env_data[1]], env_data[2],  distance1, distance_prim(self.a_position, self.m_position), 1)
+                vbm = voltage(check_side(self.b_position, self.m_position), [env_data[0], env_data[1]], env_data[2],  distance2, distance_prim(self.b_position, self.m_position), -1)
 
-                van = voltage(check_side(self.a_position, self.n_position), [env_data[0], env_data[1]], env_data[2],  distance2, distance_prim(self.a_position, self.n_position))
-                vbn = voltage(check_side(self.b_position, self.n_position), [env_data[0], env_data[1]], env_data[2],  distance1, distance_prim(self.b_position, self.n_position))
+                van = voltage(check_side(self.a_position, self.n_position), [env_data[0], env_data[1]], env_data[2],  distance2, distance_prim(self.a_position, self.n_position), 1)
+                vbn = voltage(check_side(self.b_position, self.n_position), [env_data[0], env_data[1]], env_data[2],  distance1, distance_prim(self.b_position, self.n_position), -1)
 
 
                 V_delta = (vam+vbm)-(van+vbn)
@@ -134,6 +140,8 @@ class measurement:
 
                 res_a = self.geometry_factor*V_delta/env_data[2]
                 result.append(res_a)
+                print(f'{vam}   {vbm}   {van}   {vbn}')
+                print(f'{res_a}\n')
 
                 x.append(self.middle)
                 self.middle += x_delta
