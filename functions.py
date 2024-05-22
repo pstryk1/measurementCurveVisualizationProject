@@ -35,10 +35,7 @@ def check(element, conditions, type):
 
 class measurement:
 
-    def __init__(self):
-        None
-
-    def set_geometry(self, system):
+    def __init__(self, system):
         
         if system == '1':
             self.ambn = check(check_float(input('\nSet the distance between electrodes [m]: ')), [0, 10], 'range')
@@ -119,12 +116,14 @@ class measurement:
         result = []
         x = []
         if system in ['1', '2']:
+
             if system == '1':
                 distance1 = self.ambn
                 distance2 = 2*self.ambn
             else:
                 distance1 = self.ambn
                 distance2 = self.ambn+self.mn
+
             while self.b_position <= 100:
                 print(f'dla punkt {self.middle}')
                 print(f'{self.a_position}   {self.m_position}   {self.n_position}   {self.b_position}')
@@ -149,5 +148,26 @@ class measurement:
                 self.b_position += x_delta
                 self.m_position += x_delta
                 self.n_position += x_delta
+
+        else:
+            distance1 = self.ambn
+            distance2 = self.ambn+self.mn
+
+            if self.variant == '1':
+                while self.n_position <= 100:
+                    vam = voltage(check_side(self.a_position, self.m_position), [env_data[0], env_data[1]], env_data[2],  distance1, distance_prim(self.a_position, self.m_position), 1)
+                    van = voltage(check_side(self.a_position, self.n_position), [env_data[0], env_data[1]], env_data[2],  distance2, distance_prim(self.a_position, self.n_position), 1)
+
+                    V_delta = vam-van
+                    res_a = self.geometry_factor*V_delta/env_data[2]
+
+                    result.append(res_a)
+                    x.append(self.middle)
+
+                    self.middle += x_delta
+                    self.a_position += x_delta
+                    self.m_position += x_delta
+                    self.n_position += x_delta
+
         self.x_values = x        
         return result

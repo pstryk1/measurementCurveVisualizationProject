@@ -10,8 +10,7 @@ env_data = [resistance_1, resistance_2, current]
 
 mes_system = f.check(input('\nWhat measuring system do you want to use?\n1 -> Wenner\'s System\n2 -> Schlumberger\'s System\n3 -> Three-electrode System\nSelect: '), ['1', '2', '3'], 'choice')
 
-measurement = f.measurement()
-measurement.set_geometry(mes_system)
+measurement = f.measurement(mes_system)
 
 #print(measurement.a_position)
 #print(measurement.b_position)
@@ -29,8 +28,8 @@ print(y)
 figure = plt.figure()
 ax = figure.add_subplot()
 ax.set_xticks([i for i in range(0,100) if i%2 == 0])
-#plt.plot(measurement.x_values, y)
-plt.scatter(measurement.x_values, y)
+plt.plot(measurement.x_values, y)
+#plt.scatter(measurement.x_values, y)
 #plt.yscale('log')
 plt.grid()
 plt.show()
