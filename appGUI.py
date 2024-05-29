@@ -24,33 +24,84 @@ class CustomEntry(ctk.CTkEntry):
         self.configure(validatecommand=(self.register(self.validate_input), '%P'))
         
     def validate_input(self, new_text):
-        # Dozwolone są cyfry i kropki w Entryboxie
+            # Dozwolone są cyfry i kropki w Entryboxie
         return re.match(r'^[0-9.]*$', new_text) is not None
     
 
-# Combobox do wyboru układu pomiarowego
+        # Combobox do wyboru układu pomiarowego
 def update_measurement_setup_options(event):
     selection = measurement_setup_combobox.get()
-    if selection == "Układ trójelektrodowy":
+    if selection == "Układ Trójelektrodowy":
         forward_backward_combobox.place(relx=0.15, rely=0.68, anchor=tk.CENTER)
         forward_backward_label.place(relx=0.16, rely=0.62, anchor=tk.CENTER)
-    else:
+        distance_label_1.place(relx=0.15, rely=0.74, anchor=tk.CENTER)
+        distance_entry_1.place(relx=0.15, rely=0.80, anchor=tk.CENTER)
+        distance_label_2.place(relx=0.42, rely=0.74, anchor=tk.CENTER)
+        distance_entry_2.place(relx=0.42, rely=0.80, anchor=tk.CENTER)
+    elif selection == "Układ Wennera":
         forward_backward_combobox.place_forget()
         forward_backward_label.place_forget()
+        distance_label_1.place(relx=0.15, rely=0.62, anchor=tk.CENTER)
+        distance_entry_1.place(relx=0.15, rely=0.68, anchor=tk.CENTER)
+        distance_label_2.place_forget()
+        distance_entry_2.place_forget()
+    elif selection == "Układ Schlumbergera":
+        forward_backward_combobox.place_forget()
+        forward_backward_label.place_forget()
+        distance_label_1.place(relx=0.15, rely=0.62, anchor=tk.CENTER)
+        distance_entry_1.place(relx=0.15, rely=0.68, anchor=tk.CENTER)
+        distance_label_2.place(relx=0.42, rely=0.62, anchor=tk.CENTER)
+        distance_entry_2.place(relx=0.42, rely=0.68, anchor=tk.CENTER)
 
-   # Funkcja do zatwierdzania pod przyciskiem 
+
+    # Funkcja do zatwierdzania pod przyciskiem 
 def submit_data():
-    r1 = float(input_entry_1.get())
-    r2 = float(input_entry_2.get())
-    i = float(input_entry_3.get())
-    setup = measurement_setup_combobox.get()
-    variant = forward_backward_combobox.get() if setup == "Układ trójelektrodowy" else None
+    try:
+        r1 = float(input_entry_1.get())
+        r2 = float(input_entry_2.get())
+        i = float(input_entry_3.get())
+
+        # Sprawdzenie dodatkowych pól w zależności od wyboru układu pomiarowego
+        setup = measurement_setup_combobox.get()
+        if setup == "Układ Trójelektrodowy":
+            variant = forward_backward_combobox.get()
+            distance1 = float(distance_entry_1.get())
+            distance2 = float(distance_entry_2.get())
+        elif setup == "Układ Wennera":
+            distance1 = float(distance_entry_1.get())
+            distance2 = None
+        elif setup == "Układ Schlumbergera":
+            distance1 = float(distance_entry_1.get())
+            distance2 = float(distance_entry_2.get())
+        if setup == "Układ Trójelektrodowy":
+            if not variant:
+                warning_label = ctk.CTkLabel(frame, font=("Arial", 18), text_color="red")
+                warning_label.configure(text="NIE podano wszystkich wartości ! ")
+                warning_label.place(relx=0.5, rely=0.9, anchor=tk.CENTER)
+                app.after(2000, lambda: warning_label.destroy())
+
+    except ValueError:
+        warning_label = ctk.CTkLabel(frame, font=("Arial", 18), text_color="red")
+        warning_label.configure(text="NIE podano wszystkich wartości ! ")
+        warning_label.place(relx=0.5, rely=0.9, anchor=tk.CENTER)
+        app.after(2000, lambda: warning_label.destroy())
+        return
+
+        # Sprawdzenie 
     print(f"Oporność warstwy pierwszej: {r1} Ωm")
     print(f"Oporność warstwy drugiej: {r2} Ωm")
     print(f"Natężenie prądu: {i} A")
     print(f"Układ pomiarowy: {setup}")
-    if variant:
+    if setup == "Układ Trójelektrodowy":
         print(f"Wariant układu trójelektrodowego: {variant}")
+        print(f"Odległość AM: {distance1}")
+        print(f"Odległość MN: {distance2}")
+    elif setup == "Układ Wennera":
+        print(f"Odległość AM: {distance1}")
+    elif setup == "Układ Schlumbergera":
+        print(f"Odległość AM: {distance1}")
+        print(f"Odległość MN: {distance2}")
+
         
 
 frame = ctk.CTkFrame(master=app, width=700, height=600)
@@ -96,7 +147,7 @@ output_label_2.place(relx=0.31, rely=0.4, anchor=tk.CENTER)
 title_label_4 = ctk.CTkLabel(master=frame, text="Wybierz układ pomiarowy", height=5, width=5)
 title_label_4.place(relx=0.15, rely=0.48, anchor=tk.CENTER)
 
-measurement_setup_combobox = ttk.Combobox(frame, values=["Układ Wennera", "Układ Schlumbergera", "Układ trójelektrodowy"], state="readonly")
+measurement_setup_combobox = ttk.Combobox(frame, values=["Układ Wennera", "Układ Schlumbergera", "Układ Trójelektrodowy"], state="readonly")
 measurement_setup_combobox.place(relx=0.15, rely=0.54, anchor=tk.CENTER)
 measurement_setup_combobox.bind("<<ComboboxSelected>>", update_measurement_setup_options)
 
@@ -106,8 +157,15 @@ forward_backward_label = ctk.CTkLabel(frame, text="Wariant do układu trójelekt
 # forward_backward_combobox.place_forget()
 # forward_backward_label.place_forget()
 
+distance_label_1 = ctk.CTkLabel(master=frame, text="Odległość AM", height=5, width=5)
+distance_entry_1 = CustomEntry(master=frame, width=170, height=40)
+
+distance_label_2 = ctk.CTkLabel(master=frame, text="Odległość MN", height=5, width=5)
+distance_entry_2 = CustomEntry(master=frame, width=170, height=40)
 
 submit_button = ctk.CTkButton(master=frame, text="Zatwierdź", command=submit_data)
-submit_button.place(relx=0.15, rely=0.78, anchor=tk.CENTER)
+submit_button.place(relx=0.15, rely=0.90, anchor=tk.CENTER)
 
 app.mainloop()
+
+
