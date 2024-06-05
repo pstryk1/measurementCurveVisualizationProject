@@ -12,7 +12,7 @@ def calculation():
     ############################
     measurement = f.measurement(dV.mes_system)
     app_res_values = measurement.measure(dV.mes_system, dV.m, env_data)# 4 env data = lista: opornosc1, opor2, natezenie
-
+    
 
     figure = plt.figure()
     ax = figure.add_subplot()

@@ -40,9 +40,9 @@ class measurement:
         Creates an object of the measurement class based on the chosen measurement system.
         "Układ Wennera", "Układ Schlumbergera", "Układ Trójelektrodowy"
         '''
-        system = dV.mes_system
+        self.system = dV.mes_system
         
-        if system == 'Układ Wennera':
+        if self.system == 'Układ Wennera':
             self.ambn = dV.distance1
             self.mn = self.ambn
             self.a_position = 0
@@ -54,7 +54,7 @@ class measurement:
             self.distance2 = 2*self.ambn
             self.geometry_factor = pi*2*self.ambn
 
-        elif system == 'Układ Schlumbergera':
+        elif self.system == 'Układ Schlumbergera':
             self.ambn = dV.distance1
             self.mn = dV.distance2
             self.a_position = 0
@@ -67,7 +67,6 @@ class measurement:
             self.geometry_factor = pi*self.ambn*(self.ambn+self.mn)/self.mn
 
         else:
-            dV.variant = dV.variant
             self.ambn = dV.distance1
             self.mn = dV.distance2
             
@@ -153,8 +152,8 @@ class measurement:
 
         
         result, x = [], []
-        if system in ['1', '2']:
-
+        if self.system in ["Układ Wennera", "Układ Schlumbergera"]:
+            print('gej')
             while self.b_position <= 100:
                 vam = voltage(check_side(self.a_position, self.m_position), [env_data[0], env_data[1]], env_data[2],  self.distance1, distance_prim(self.a_position, self.m_position), 1)
                 vbm = voltage(check_side(self.b_position, self.m_position), [env_data[0], env_data[1]], env_data[2],  self.distance2, distance_prim(self.b_position, self.m_position), -1)

@@ -30,7 +30,7 @@ class CustomEntry(ctk.CTkEntry):
 
         # Combobox do wyboru układu pomiarowego
 def update_measurement_setup_options(event):
-    selection = measurement_setup_combobox.get()
+    selection = str(measurement_setup_combobox.get())
     if selection == "Układ Trójelektrodowy":
         forward_backward_combobox.place(relx=0.15, rely=0.58, anchor=tk.CENTER)
         forward_backward_label.place(relx=0.16, rely=0.53, anchor=tk.CENTER)
