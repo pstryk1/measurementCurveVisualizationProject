@@ -1,5 +1,6 @@
 from math import pi
-
+import dataVar as dV
+"""
 def check_float(element):
 
     '''
@@ -29,7 +30,7 @@ def check(element, conditions, type):
         while element <= conditions[0] or element > conditions[len(conditions)-1]:
             element = check_float(input('Inproper value. Please try again: '))
     return element
-
+"""
 
 class measurement:
 
@@ -37,10 +38,12 @@ class measurement:
 
         '''
         Creates an object of the measurement class based on the chosen measurement system.
+        "Układ Wennera", "Układ Schlumbergera", "Układ Trójelektrodowy"
         '''
+        system = dV.mes_system
         
-        if system == '1':
-            self.ambn = check(check_float(input('\nSet the distance between electrodes [m]: ')), [0, 10], 'range')
+        if system == 'Układ Wennera':
+            self.ambn = dV.distance1
             self.mn = self.ambn
             self.a_position = 0
             self.b_position = 3*self.ambn
@@ -51,9 +54,9 @@ class measurement:
             self.distance2 = 2*self.ambn
             self.geometry_factor = pi*2*self.ambn
 
-        elif system == '2':
-            self.ambn = check(check_float(input('\nSet the distance between A-M and B-N electrodes [m]: ')), [0, 10], 'range')
-            self.mn = check(check_float(input('\nSet the distance between M-N electrodes [m]: ')), [0, 10], 'range')
+        elif system == 'Układ Schlumbergera':
+            self.ambn = dV.distance1
+            self.mn = dV.distance2
             self.a_position = 0
             self.b_position = 2*self.ambn+self.mn
             self.m_position = self.ambn
@@ -64,11 +67,11 @@ class measurement:
             self.geometry_factor = pi*self.ambn*(self.ambn+self.mn)/self.mn
 
         else:
-            self.variant = check(input('\nWhat profiling variant do you want to use?\n1 -> Forward\n2 -> Backward\nSelect: '), ['1', '2'], 'choice')
-            self.ambn = check(check_float(input('\nSet the distance between A-M electrodes [m]: ')), [0, 10], 'range')
-            self.mn = check(check_float(input('\nSet the distance between M-N electrodes [m]: ')), [0, 10], 'range')
+            dV.variant = dV.variant
+            self.ambn = dV.distance1
+            self.mn = dV.distance2
             
-            if self.variant == '1':
+            if dV.variant == 'Forward':
                 self.a_position = 0
                 self.b_position = None
                 self.m_position = self.ambn
@@ -174,7 +177,7 @@ class measurement:
 
         else:
 
-            if self.variant == '1':
+            if dV.variant == 'Forward':
                 while self.n_position <= 100:
                     vam = voltage(check_side(self.a_position, self.m_position), [env_data[0], env_data[1]], env_data[2],  self.distance1, distance_prim(self.a_position, self.m_position), 1)
                     van = voltage(check_side(self.a_position, self.n_position), [env_data[0], env_data[1]], env_data[2],  self.distance2, distance_prim(self.a_position, self.n_position), 1)
