@@ -153,7 +153,7 @@ class measurement:
         
         result, x = [], []
         if self.system in ["Układ Wennera", "Układ Schlumbergera"]:
-            print('gej')
+            
             while self.b_position <= 100:
                 vam = voltage(check_side(self.a_position, self.m_position), [env_data[0], env_data[1]], env_data[2],  self.distance1, distance_prim(self.a_position, self.m_position), 1)
                 vbm = voltage(check_side(self.b_position, self.m_position), [env_data[0], env_data[1]], env_data[2],  self.distance2, distance_prim(self.b_position, self.m_position), -1)
