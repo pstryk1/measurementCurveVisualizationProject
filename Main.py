@@ -1,11 +1,10 @@
 import functions as f
 import dataVar as dV
-
 import tkinter as tk
 from tkinter import ttk
+from tkinter import messagebox
 import customtkinter as ctk
 from tkinter import filedialog
-
 import re
 from matplotlib import pyplot as plt
 
@@ -46,38 +45,51 @@ def save_text():
     '''
     Saves the apparent resistivity values for each data point in *.txt file.
     '''
+    try:
+        file_path = filedialog.asksaveasfilename(defaultextension=".txt", filetypes=[("Text files", "*.txt")])
 
-    file_path = filedialog.asksaveasfilename(defaultextension=".txt", filetypes=[("Text files", "*.txt")])
+        with open(file_path, 'w') as file:
+            file.write("x\ty\n")
 
-    with open(file_path, 'w') as file:
-        file.write("x\ty\n")
+        for i in range(len(dV.x)):
+            if file_path:
+                with open(file_path, 'a') as file:
+                    file.write(f"{dV.x[i]}\t{dV.app_res_values[i]}\n")
 
-    for i in range(len(dV.x)):
-        if file_path:
-            with open(file_path, 'a') as file:
-                file.write(f"{dV.x[i]}\t{dV.app_res_values[i]}\n")
+    except TypeError:
+        messagebox.showerror("Error", "Nie wygenerowano żadnych danych!")
+        return
+    except FileNotFoundError:
+        pass
 
 
 def save_plot():
-    
-    figure = plt.figure(figsize=(12, 6), num = 'Krzywa profilowania elektooporowego')
-    ax = figure.add_subplot()
-    
-    ax.plot(dV.x, dV.app_res_values, label = 'Krzywa profilowanie elektrooporowego', color = 'purple')   
-    ax.axvline(x=50, color='r', linestyle='--', label = 'Granica rozdziału') 
-    
-    ax.set_xticks([i for i in range(0,100) if i%5 == 0])
-    plt.yscale('log')
-    plt.title('Krzywa profilowania elektrooporowego')
-    plt.xlabel('x [m]', fontsize=10, font='Arial')
-    plt.ylabel('ρa [Ωm]', fontsize=10, font='Arial')
-    plt.grid(True, which='both', linestyle='--', linewidth=0.5)
-    plt.legend()
+    try:
+        figure = plt.figure(figsize=(12, 6), num = 'Krzywa profilowania elektooporowego')
+        ax = figure.add_subplot()
+        
+        ax.plot(dV.x, dV.app_res_values, label = 'Krzywa profilowanie elektrooporowego', color = 'purple')   
+        ax.axvline(x=50, color='r', linestyle='--', label = 'Granica rozdziału') 
+        
+        ax.set_xticks([i for i in range(0,100) if i%5 == 0])
+        plt.yscale('log')
+        plt.title('Krzywa profilowania elektrooporowego')
+        plt.xlabel('x [m]', fontsize=10, font='Arial')
+        plt.ylabel('ρa [Ωm]', fontsize=10, font='Arial')
+        plt.grid(True, which='both', linestyle='--', linewidth=0.5)
+        plt.legend()
 
 
-    file_path = filedialog.asksaveasfilename(defaultextension=".png", filetypes=[("png files", "*.png")])
-    plt.savefig(file_path)
-    pass
+        file_path = filedialog.asksaveasfilename(defaultextension=".png", filetypes=[("png files", "*.png")])
+        if file_path == "":
+            raise FileNotFoundError
+        plt.savefig(file_path)
+    except ValueError:
+        messagebox.showerror("Error", "Nie wygenerowano żadnych danych!")
+        return
+    except FileNotFoundError:
+        pass
+    
 
 #-------------------------------------------------------GUI-------------------------------------------------------#
 
@@ -138,10 +150,7 @@ def update_measurement_setup_options(event):
             distance_entry_2.place(relx=0.42, rely=0.58, anchor=tk.CENTER)
 
     except ValueError:
-        warning_label = ctk.CTkLabel(frame, font=("Arial", 18), text_color="red")
-        warning_label.configure(text="NIE podano wszystkich wartości lub są one nieprawidłowe! ")
-        warning_label.place(relx=0.5, rely=0.9, anchor=tk.CENTER)
-        app.after(2000, lambda: warning_label.destroy())
+        messagebox.showerror("Error", "NIE podano wszystkich wartości lub są one nieprawidłowe!")
         return
 
 def submit_data():
@@ -237,19 +246,13 @@ def submit_data():
         if dV.mes_system == "Układ Trójelektrodowy":
 
             if not dV.variant:
-                warning_label = ctk.CTkLabel(frame, font=("Arial", 18), text_color="red")
-                warning_label.configure(text="NIE podano wszystkich wartości !")
-                warning_label.place(relx=0.5, rely=0.9, anchor=tk.CENTER)
-                app.after(2000, lambda: warning_label.destroy())
+                messagebox.showerror("Error", "NIE podano wszystkich wartości lub są one nieprawidłowe!")
+  
         
         calculation()
 
     except ValueError:
-
-        warning_label = ctk.CTkLabel(frame, font=("Arial", 18), text_color="red")
-        warning_label.configure(text="NIE podano wszystkich wartości lub są one nieprawidłowe! ")
-        warning_label.place(relx=0.5, rely=0.9, anchor=tk.CENTER)
-        app.after(2000, lambda: warning_label.destroy())
+        messagebox.showerror("Error", "NIE podano wszystkich wartości lub są one nieprawidłowe!")
         return
      
 
