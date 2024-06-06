@@ -1,18 +1,25 @@
 import functions as f
-from matplotlib import pyplot as plt
-import tkinter as tk
-from tkinter import ttk
-from tkinter import filedialog
-import customtkinter as ctk
-import re
 import dataVar as dV
 
-#-------------------------------------------------------plot-------------------------------------------------------#
+import tkinter as tk
+from tkinter import ttk
+import customtkinter as ctk
+from tkinter import filedialog
+
+import re
+from matplotlib import pyplot as plt
+
+#-------------------------------------------------------Functions-------------------------------------------------------#
+
 def calculation():
+
+    '''
+    Calculates the apparent resistivity values for data points on the profile, based on the given enviromental data.
+    '''
+
     env_data = [dV.resistance_1, dV.resistance_2, dV.current]
-    ############################
     measurement = f.measurement(dV.mes_system)
-    dV.app_res_values = measurement.measure(dV.mes_system, dV.m, env_data)# 4 env data = lista: opornosc1, opor2, natezenie
+    dV.app_res_values = measurement.measure(dV.mes_system, dV.m, env_data)
     dV.x = measurement.x_values
 
 
@@ -21,8 +28,8 @@ def calculation():
     figure = plt.figure()
     ax = figure.add_subplot()
     ax.set_xticks([i for i in range(0,100) if i%2 == 0])
-    #plt.plot(measurement.x_values, y)
-    plt.scatter(dV.x, dV.app_res_values)
+
+    plt.plot(dV.x, dV.app_res_values)
     plt.yscale('log')
     plt.grid()
     plt.show()
@@ -30,11 +37,17 @@ def calculation():
 
 
 def save_text():
+
+    '''
+    Saves the apparent resistivity values for each data point in *.txt file.
+    '''
+
     file_path = filedialog.asksaveasfilename(defaultextension=".txt", filetypes=[("Text files", "*.txt")])
+
     with open(file_path, 'w') as file:
-                file.write("x   y\n")
+        file.write("x\ty\n")
+
     for i in range(len(dV.x)):
-        
         if file_path:
             with open(file_path, 'a') as file:
                 file.write(f"{dV.x[i]}\t{dV.app_res_values[i]}\n")
@@ -70,18 +83,17 @@ app.resizable(False, False)
 
 
 class CustomEntry(ctk.CTkEntry):
-    def __init__(self, master=None, **kwargs):  
+
+    def __init__(self, master=None, **kwargs):
         super().__init__(master, **kwargs)
         self.configure(validate="key")
         self.configure(validatecommand=(self.register(self.validate_input), '%P'))
         
     def validate_input(self, new_text):
-            # Dozwolone są cyfry i kropki w Entryboxie
         return re.match(r'^[0-9.]*$', new_text) is not None
-    
 
-        # Combobox do wyboru układu pomiarowego
 def update_measurement_setup_options(event):
+
     selection = measurement_setup_combobox.get()
     
     try:
@@ -95,6 +107,7 @@ def update_measurement_setup_options(event):
             distance_entry_1.place(relx=0.15, rely=0.68, anchor=tk.CENTER)
             distance_label_2.place(relx=0.42, rely=0.63, anchor=tk.CENTER)
             distance_entry_2.place(relx=0.42, rely=0.68, anchor=tk.CENTER)
+
         elif selection == "Układ Wennera":
             forward_backward_combobox.place_forget()
             forward_backward_label.place_forget()
@@ -102,6 +115,7 @@ def update_measurement_setup_options(event):
             distance_entry_1.place(relx=0.15, rely=0.58, anchor=tk.CENTER)
             distance_label_2.place_forget()
             distance_entry_2.place_forget()
+
         elif selection == "Układ Schlumbergera":
             forward_backward_combobox.place_forget()
             forward_backward_label.place_forget()
@@ -109,13 +123,13 @@ def update_measurement_setup_options(event):
             distance_entry_1.place(relx=0.15, rely=0.58, anchor=tk.CENTER)
             distance_label_2.place(relx=0.42, rely=0.53, anchor=tk.CENTER)
             distance_entry_2.place(relx=0.42, rely=0.58, anchor=tk.CENTER)
+
     except ValueError:
         warning_label = ctk.CTkLabel(frame, font=("Arial", 18), text_color="red")
         warning_label.configure(text="NIE podano wszystkich wartości lub są one nieprawidłowe! ")
         warning_label.place(relx=0.5, rely=0.9, anchor=tk.CENTER)
         app.after(2000, lambda: warning_label.destroy())
         return
-
 
 
     # Funkcja do zatwierdzania pod przyciskiem 
@@ -208,26 +222,7 @@ def submit_data():
         warning_label.place(relx=0.5, rely=0.9, anchor=tk.CENTER)
         app.after(2000, lambda: warning_label.destroy())
         return
-
-        # Sprawdzenie 
-    """
-    print(f"Oporność warstwy pierwszej: {r1} Ωm")
-    print(f"Oporność warstwy drugiej: {r2} Ωm")
-    print(f"Natężenie prądu: {i} A")
-    print(f"Odległość pomiędzy punktami pomiarowymi {m} m")
-    print(f"Układ pomiarowy: {setup}")
-    if setup == "Układ Trójelektrodowy":
-        print(f"Wariant układu trójelektrodowego: {variant}")
-        print(f"Odległość AM: {distance1}")
-        print(f"Odległość MN: {distance2}")
-    elif setup == "Układ Wennera":
-        print(f"Odległość AM: {distance1}")
-    elif setup == "Układ Schlumbergera":
-        print(f"Odległość AM: {distance1}")
-        print(f"Odległość MN: {distance2}")
-    """
-    
-        
+     
 
 frame = ctk.CTkFrame(master=app, width=700, height=700)
 frame.pack(pady=25)
