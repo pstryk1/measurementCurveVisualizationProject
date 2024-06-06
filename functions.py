@@ -3,7 +3,7 @@ import dataVar as dV
 
 class measurement:
 
-    def __init__(self, system):
+    def __init__(self):
 
         '''
         Creates an object of the measurement class based on the chosen measurement system.
@@ -57,7 +57,7 @@ class measurement:
             self.geometry_factor = 2*pi*self.ambn*(self.ambn+self.mn)/self.mn
 
             
-    def measure(self, system, x_delta, env_data):
+    def measure(self, x_delta, env_data):
 
         '''
         Calculates the apparent resistivity for all of the point on a 2D profile of a two layer model.
