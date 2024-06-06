@@ -84,11 +84,12 @@ def save_plot():
         if file_path == "":
             raise FileNotFoundError
         plt.savefig(file_path)
+        plt.close()
     except ValueError:
         messagebox.showerror("Error", "Nie wygenerowano żadnych danych!")
         return
     except FileNotFoundError:
-        pass
+        plt.close()
     
 
 #-------------------------------------------------------GUI-------------------------------------------------------#
