@@ -68,7 +68,7 @@ def save_plot():
         figure = plt.figure(figsize=(12, 6), num = 'Krzywa profilowania elektooporowego')
         ax = figure.add_subplot()
         
-        ax.plot(dV.x, dV.app_res_values, label = 'Krzywa profilowanie elektrooporowego', color = 'purple')   
+        ax.plot(dV.x, dV.app_res_values, label = 'Krzywa profilowania elektrooporowego', color = 'purple')   
         ax.axvline(x=50, color='r', linestyle='--', label = 'Granica rozdziału') 
         
         ax.set_xticks([i for i in range(0,100) if i%5 == 0])
