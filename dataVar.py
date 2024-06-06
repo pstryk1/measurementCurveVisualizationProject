@@ -6,3 +6,5 @@ mes_system = ''
 variant = ''
 distance1 = 0
 distance2 = 0
+app_res_values=[]
+x=0

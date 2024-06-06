@@ -2,6 +2,7 @@ import functions as f
 from matplotlib import pyplot as plt
 import tkinter as tk
 from tkinter import ttk
+from tkinter import filedialog
 import customtkinter as ctk
 import re
 import dataVar as dV
@@ -11,19 +12,27 @@ def calculation():
     env_data = [dV.resistance_1, dV.resistance_2, dV.current]
     ############################
     measurement = f.measurement(dV.mes_system)
-    app_res_values = measurement.measure(dV.mes_system, dV.m, env_data)# 4 env data = lista: opornosc1, opor2, natezenie
-    
+    dV.app_res_values = measurement.measure(dV.mes_system, dV.m, env_data)# 4 env data = lista: opornosc1, opor2, natezenie
+    dV.x = measurement.x_values
 
     figure = plt.figure()
     ax = figure.add_subplot()
     ax.set_xticks([i for i in range(0,100) if i%2 == 0])
     #plt.plot(measurement.x_values, y)
-    plt.scatter(measurement.x_values, app_res_values)
+    plt.scatter(dV.x, dV.app_res_values)
     plt.yscale('log')
     plt.grid()
     plt.show()
 
-
+def save_text():
+    file_path = filedialog.asksaveasfilename(defaultextension=".txt", filetypes=[("Text files", "*.txt")])
+    with open(file_path, 'w') as file:
+                file.write("x   y\n")
+    for i in range(len(dV.x)):
+        
+        if file_path:
+            with open(file_path, 'a') as file:
+                file.write(f"{dV.x[i]}\t{dV.app_res_values[i]}\n")
 
 #-------------------------------------------------------plot-------------------------------------------------------#
 
@@ -277,6 +286,12 @@ distance_entry_2 = CustomEntry(master=frame, width=170, height=40)
 
 submit_button = ctk.CTkButton(master=frame, text="Zatwierdź", command=submit_data)
 submit_button.place(relx=0.15, rely=0.8, anchor=tk.CENTER)
+
+save_button = ctk.CTkButton(master=frame, text="Zapisz dane", command=save_text)
+save_button.place(relx=0.15, rely=0.89, anchor=tk.CENTER)
+
+save_button = ctk.CTkButton(master=frame, text="Zapisz wykres")
+save_button.place(relx=0.40, rely=0.89, anchor=tk.CENTER)
 
 submit_button = ctk.CTkLabel(master=frame, text="Created by Mateusz Kalisz & Jakub Kłosiński & Bartłomiej Stachurski & Patryk Kusper", height=5, width=5)
 submit_button.place(relx=0.38, rely=0.98, anchor=tk.CENTER)
