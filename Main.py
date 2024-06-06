@@ -25,13 +25,19 @@ def calculation():
 
 
     #------------------plot
-    figure = plt.figure()
+    figure = plt.figure(figsize=(12, 6), num = 'Krzywa profilowania elektooporowego')
     ax = figure.add_subplot()
-    ax.set_xticks([i for i in range(0,100) if i%2 == 0])
-
-    plt.plot(dV.x, dV.app_res_values)
+    
+    ax.plot(dV.x, dV.app_res_values, label = 'Krzywa profilowanie elektrooporowego', color = 'purple')   
+    ax.axvline(x=50, color='r', linestyle='--', label = 'Granica rozdziału') 
+    
+    ax.set_xticks([i for i in range(0,100) if i%5 == 0])
     plt.yscale('log')
-    plt.grid()
+    plt.title('Krzywa profilowania elektrooporowego')
+    plt.xlabel('x [m]', fontsize=10, font='Arial')
+    plt.ylabel('ρa [Ωm]', fontsize=10, font='Arial')
+    plt.grid(True, which='both', linestyle='--', linewidth=0.5)
+    plt.legend()
     plt.show()
     #------------------plot
 
@@ -54,10 +60,20 @@ def save_text():
 
 
 def save_plot():
-
-
-
-
+    
+    figure = plt.figure(figsize=(12, 6), num = 'Krzywa profilowania elektooporowego')
+    ax = figure.add_subplot()
+    
+    ax.plot(dV.x, dV.app_res_values, label = 'Krzywa profilowanie elektrooporowego', color = 'purple')   
+    ax.axvline(x=50, color='r', linestyle='--', label = 'Granica rozdziału') 
+    
+    ax.set_xticks([i for i in range(0,100) if i%5 == 0])
+    plt.yscale('log')
+    plt.title('Krzywa profilowania elektrooporowego')
+    plt.xlabel('x [m]', fontsize=10, font='Arial')
+    plt.ylabel('ρa [Ωm]', fontsize=10, font='Arial')
+    plt.grid(True, which='both', linestyle='--', linewidth=0.5)
+    plt.legend()
 
 
     file_path = filedialog.asksaveasfilename(defaultextension=".png", filetypes=[("png files", "*.png")])
