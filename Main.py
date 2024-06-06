@@ -15,6 +15,9 @@ def calculation():
     dV.app_res_values = measurement.measure(dV.mes_system, dV.m, env_data)# 4 env data = lista: opornosc1, opor2, natezenie
     dV.x = measurement.x_values
 
+
+
+    #------------------plot
     figure = plt.figure()
     ax = figure.add_subplot()
     ax.set_xticks([i for i in range(0,100) if i%2 == 0])
@@ -23,6 +26,8 @@ def calculation():
     plt.yscale('log')
     plt.grid()
     plt.show()
+    #------------------plot
+
 
 def save_text():
     file_path = filedialog.asksaveasfilename(defaultextension=".txt", filetypes=[("Text files", "*.txt")])
@@ -33,6 +38,18 @@ def save_text():
         if file_path:
             with open(file_path, 'a') as file:
                 file.write(f"{dV.x[i]}\t{dV.app_res_values[i]}\n")
+
+
+def save_plot():
+
+
+
+
+
+
+    file_path = filedialog.asksaveasfilename(defaultextension=".png", filetypes=[("png files", "*.png")])
+    plt.savefig(file_path)
+    pass
 
 #-------------------------------------------------------plot-------------------------------------------------------#
 
@@ -290,7 +307,7 @@ submit_button.place(relx=0.15, rely=0.8, anchor=tk.CENTER)
 save_button = ctk.CTkButton(master=frame, text="Zapisz dane", command=save_text)
 save_button.place(relx=0.15, rely=0.89, anchor=tk.CENTER)
 
-save_button = ctk.CTkButton(master=frame, text="Zapisz wykres")
+save_button = ctk.CTkButton(master=frame, text="Zapisz wykres", command=save_plot)
 save_button.place(relx=0.40, rely=0.89, anchor=tk.CENTER)
 
 submit_button = ctk.CTkLabel(master=frame, text="Created by Mateusz Kalisz & Jakub Kłosiński & Bartłomiej Stachurski & Patryk Kusper", height=5, width=5)
