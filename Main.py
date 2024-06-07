@@ -100,7 +100,7 @@ ctk.deactivate_automatic_dpi_awareness()
 
 app = ctk.CTk()
 app.title("Hydrogeofizyka - Wyznaczanie krzywej profilowania elektrooporowego")
-app.iconbitmap('images/app-icon.ico')
+app.iconbitmap('images/Reflexw_MAINICON.ico')
 app.geometry("750x750")
 style = ttk.Style(app)
 app.tk.call("source", "Theme/forest-dark.tcl")
