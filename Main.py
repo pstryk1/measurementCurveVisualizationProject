@@ -153,6 +153,20 @@ def update_measurement_setup_options(event):
     except ValueError:
         messagebox.showerror("Error", "NIE podano wszystkich wartości lub są one nieprawidłowe!")
         return
+    
+
+def clear_all_data():
+    '''
+    Clear all data which is in entryboxes.
+    '''
+    input_entry_1.delete(0, ctk.END)
+    input_entry_2.delete(0, ctk.END)
+    input_entry_3.delete(0, ctk.END)
+    input_entry_4.delete(0, ctk.END)
+    measurement_setup_combobox.set("")
+    forward_backward_combobox.set("")
+    distance_entry_1.delete(0, ctk.END)
+    distance_entry_2.delete(0, ctk.END)
 
 def submit_data():
 
@@ -340,6 +354,9 @@ save_button.place(relx=0.15, rely=0.89, anchor=tk.CENTER)
 
 save_button = ctk.CTkButton(master=frame, text="Zapisz wykres", command=save_plot)
 save_button.place(relx=0.40, rely=0.89, anchor=tk.CENTER)
+
+clear_data_button = ctk.CTkButton(master=frame, text="Wyczyść wszystko", command=clear_all_data, fg_color="orange", text_color="black", hover_color="red")
+clear_data_button.place(relx=0.4, rely=0.8, anchor=tk.CENTER)
 
 submit_button = ctk.CTkLabel(master=frame, text="Created by Mateusz Kalisz & Jakub Kłosiński & Bartłomiej Stachurski & Patryk Kusper", height=5, width=5)
 submit_button.place(relx=0.38, rely=0.98, anchor=tk.CENTER)
